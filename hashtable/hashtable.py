@@ -14,55 +14,61 @@ MIN_CAPACITY = 8
 
 class HashTable:
     """
-    A hash table that with `capacity` buckets
-    that accepts string keys
-
-    Implement this.
+    A hash table with `capacity` buckets that accepts string keys
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.capacity = capacity
+        self.storage = []
+        n = range(capacity)
+        for i in n:
+            self.storage.append(HashTableEntry(i, None))
 
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
         table data. (Not the number of items stored in the hash table,
-        but the number of slots in the main list.)
-
-        One of the tests relies on this.
-
-        Implement this.
+        but the number of slots in the main list)
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
-
-        Implement this.
         """
-        # Your code here
+        used_storage = []
+        load_factor = 0
+        for i in self.storage:
+            if i != None:
+                used_storage.append(i)
+                load_factor = len(used_storage) / self.capacity
+        return load_factor
 
 
-    def fnv1(self, key):
+    def fnv1(self, key, seed=0):
         """
-        FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
+        Fowler-Noll-Vo (FNV-1) 64-bit hash function
         """
-
-        # Your code here
+        FNV_prime = 1099511628211
+        offset_basis = 14695981039346656037
+        hash = offset_basis + seed
+        for x in key:
+            hash = hash * FNV_prime
+            hash = hash ^ ord(x)
+        return hash
 
 
     def djb2(self, key):
         """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
+        DJB2 32-bit hash function by Professor Daniel J. Bernstein
+        * one of the most efficient hash functions ever published *
         """
-        # Your code here
+        hash = 5381
+        for x in key:
+            hash = hash * 33 + ord(x)
+        # return the hash with 0xFFFFFFFF masking
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -70,51 +76,50 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
+
 
     def put(self, key, value):
         """
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
-        Implement this.
         """
-        # Your code here
+        i = self.hash_index(key)
+        self.storage[i].value = value
 
 
     def delete(self, key):
         """
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
-        Implement this.
         """
-        # Your code here
+        i = self.hash_index(key)
+        self.put(key, None)
+        return self.storage[i].value # this should return None
 
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
-        Implement this.
         """
-        # Your code here
+        i = self.hash_index(key)
+        element = self.storage[i]
+        if element is not None:
+            return element.value
+        return None
 
 
     def resize(self, new_capacity):
         """
-        Changes the capacity of the hash table and
-        rehashes all key/value pairs.
-
-        Implement this.
+        Changes the capacity of the hash table and rehashes all key/value pairs.
         """
-        # Your code here
-
+        # TODO | THIS IS A DAY-2 EXERCISE
+        # also: set up  get_load_factor(), which I've already completed
+        # also: set up automatic hashtable size halving at <(0.2) and doubling at >(0.7)
+        self.capacity = new_capacity
+        # INCOMPLETE
 
 
 if __name__ == "__main__":
@@ -139,15 +144,15 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    # # Test resizing
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # # Test if data intact after resizing
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
     print("")
