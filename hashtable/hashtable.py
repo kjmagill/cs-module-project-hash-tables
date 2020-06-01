@@ -87,6 +87,7 @@ class HashTable:
         """
         i = self.hash_index(key)
         self.storage[i].value = value
+        return self.storage[i].value
 
 
     def delete(self, key):
@@ -94,9 +95,7 @@ class HashTable:
         Remove the value stored with the given key.
         Print a warning if the key is not found.
         """
-        i = self.hash_index(key)
         self.put(key, None)
-        return self.storage[i].value # this should return None
 
 
     def get(self, key):
@@ -115,9 +114,9 @@ class HashTable:
         """
         Changes the capacity of the hash table and rehashes all key/value pairs.
         """
-        # TODO | THIS IS A DAY-2 EXERCISE
-        # also: set up  get_load_factor(), which I've already completed
-        # also: set up automatic hashtable size halving at <(0.2) and doubling at >(0.7)
+        # TODO | THIS IS A DAY-2 EXERCISE, along with:
+        # - setting up  get_load_factor(), which I've already completed
+        # - setting up automatic hashtable size halving at <(0.2) & doubling at >(0.7)
         self.capacity = new_capacity
         # INCOMPLETE
 
