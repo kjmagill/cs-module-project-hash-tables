@@ -1,4 +1,5 @@
 import re
+from bst import BSTNode
 
 with open('robin.txt') as f:
     read_data = f.read()
@@ -12,7 +13,7 @@ word_list = read_data.split(' ')
 word_dict = dict()
 
 # create a variable to store the length of the longest word in the data
-longest_word_length = 0
+longest_length = 0
 
 # for each word in the list...
 for word in word_list:
@@ -31,20 +32,19 @@ for word in word_list:
         word_dict[word] = [1, '#']
 
         # if the current word is longer than the previously longest, update the variable
-        if len(word) > longest_word_length:
-            longest_word_length = len(word)
+        if len(word) > longest_length:
+            longest_length = len(word)
 
 # increment the longest word's character count by 2 to account for the
 # two spaces specified in the instructions before printing the hash marks
-longest_word_length += 2
+longest_length += 2
 
-# sort from most frequently used words to least frequently used
-for value in sorted(word_dict.items(), key = lambda e: e[1][0], reverse=True):
+sorted_items_list = sorted(word_dict.items(), key = lambda e: e[1][0], reverse=True)
+n = len(sorted_items_list)
 
-    # print(f'{value[0]:{longest_word_length}}{value[1][1]}')
-    
-    # for each group of words with equal counters, sort them alphabetically
-    for key in sorted(word_dict):
-        print(f'{key:{longest_word_length}}{word_dict[key][1]}')
+for i in range(n-1):
+    if int(sorted_items_list[i][1][0]) == int(sorted_items_list[i+1][1][0]) and str(sorted_items_list[i][0][0]) > str(sorted_items_list[i+1][0]):
+        sorted_items_list[i], sorted_items_list[i+1] = sorted_items_list[i+1], sorted_items_list[i]
 
-    # WORK IN PROGRESS
+for item in sorted_items_list:
+    print(f'{item[0]:{longest_length}}{item[1][1]}')
